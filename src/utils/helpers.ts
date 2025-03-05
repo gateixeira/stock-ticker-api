@@ -1,18 +1,21 @@
-const axios = require('axios');
-require('dotenv').config();
+import axios from 'axios';
+import { config } from 'dotenv';
+import { Stock, HistoricalPrice, AlphaVantageQuote, AlphaVantageHistorical } from '../types';
+
+config();
 
 const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
 const BASE_URL = 'https://www.alphavantage.co/query';
 
-const getStockBySymbol = async (symbol) => {
+export const getStockBySymbol = async (symbol: string): Promise<Stock | null> => {
     try {
-        const response = await axios.get(`${BASE_URL}?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`);
+        const response = await axios.get<AlphaVantageQuote>(`${BASE_URL}?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`);
         const quote = response.data['Global Quote'];
         
         if (!quote) {
             return null;
         }
-
+        
         return {
             symbol: quote['01. symbol'],
             price: parseFloat(quote['05. price']),
@@ -26,9 +29,15 @@ const getStockBySymbol = async (symbol) => {
     }
 };
 
-const getHistoricalPrices = async (symbol, startDate, endDate) => {
+export const getHistoricalPrices = async (
+    symbol: string,
+    startDate?: string,
+    endDate?: string
+): Promise<HistoricalPrice[] | null> => {
     try {
-        const response = await axios.get(`${BASE_URL}?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`);
+        const response = await axios.get<AlphaVantageHistorical>(
+            `${BASE_URL}?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`
+        );
         const timeSeries = response.data['Time Series (Daily)'];
         
         if (!timeSeries) {
@@ -45,16 +54,11 @@ const getHistoricalPrices = async (symbol, startDate, endDate) => {
                 return (!startDate || priceDate >= new Date(startDate)) && 
                        (!endDate || priceDate <= new Date(endDate));
             })
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         return historicalData;
     } catch (error) {
         console.error('Error fetching historical data:', error);
         return null;
     }
-};
-
-module.exports = {
-    getStockBySymbol,
-    getHistoricalPrices,
 };

@@ -1,11 +1,11 @@
-const express = require('express');
-const { getStockBySymbol, getHistoricalPrices } = require('./utils/helpers');
+import express, { Request, Response } from 'express';
+import { getStockBySymbol, getHistoricalPrices } from './utils/helpers';
+import { Server } from 'http';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Endpoint to get a single stock by symbol
-app.get('/api/stocks/:symbol', async (req, res) => {
+app.get('/api/stocks/:symbol', async (req: Request, res: Response) => {
     try {
         const stock = await getStockBySymbol(req.params.symbol);
         if (stock) {
@@ -18,11 +18,10 @@ app.get('/api/stocks/:symbol', async (req, res) => {
     }
 });
 
-// Endpoint to get historical prices within a week
-app.get('/api/stocks/:symbol/historical', async (req, res) => {
+app.get('/api/stocks/:symbol/historical', async (req: Request, res: Response) => {
     try {
         const { symbol } = req.params;
-        const { startDate, endDate } = req.query;
+        const { startDate, endDate } = req.query as { startDate?: string; endDate?: string };
         const historicalPrices = await getHistoricalPrices(symbol, startDate, endDate);
         
         if (historicalPrices) {
@@ -35,8 +34,23 @@ app.get('/api/stocks/:symbol/historical', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+let server: Server;
 
-module.exports = app;
+export const startServer = () => {
+    server = app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+    return server;
+};
+
+export const closeServer = () => {
+    return new Promise<void>((resolve) => {
+        if (server) {
+            server.close(() => resolve());
+        } else {
+            resolve();
+        }
+    });
+};
+
+export default app;

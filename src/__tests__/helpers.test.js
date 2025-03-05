@@ -4,6 +4,9 @@ const { getStockBySymbol } = require('../utils/helpers');
 // Mock axios
 jest.mock('axios');
 
+// Make sure axios.get is a mock function
+axios.get = jest.fn();
+
 // Mock console.error
 console.error = jest.fn();
 
