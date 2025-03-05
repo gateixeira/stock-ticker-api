@@ -1,13 +1,12 @@
 # Stock Ticker API
 
-This project is a REST API for a stock ticker application that provides information about the 50 biggest stock prices in the S&P 500. It allows users to query individual stock prices and retrieve historical price data within a week.
+This project is a REST API for a stock ticker application that provides real-time and historical stock price information. It allows users to query individual stock prices and retrieve historical price data for any given stock symbol.
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
-  - [Get All Stocks](#get-all-stocks)
   - [Get Single Stock](#get-single-stock)
   - [Get Historical Prices](#get-historical-prices)
 - [Contributing](#contributing)
@@ -31,30 +30,39 @@ This project is a REST API for a stock ticker application that provides informat
 ## Usage
 
 To start the server, run:
+
 ```
 npm start
 ```
+
 The server will be running on `http://localhost:3000`.
 
 ## API Endpoints
-
-### Get All Stocks
-
-- **Endpoint:** `/api/stocks`
-- **Method:** `GET`
-- **Description:** Returns a list of the 50 biggest stock prices in the S&P 500.
 
 ### Get Single Stock
 
 - **Endpoint:** `/api/stocks/:symbol`
 - **Method:** `GET`
-- **Description:** Returns the details of a single stock based on the provided symbol.
+- **Description:** Returns the current price and trading information for a stock by its symbol
+- **Response Example:**
+  ```json
+  {
+    "symbol": "AAPL",
+    "price": 150.25,
+    "change": -0.75,
+    "changePercent": -0.5,
+    "volume": 32500000
+  }
+  ```
 
 ### Get Historical Prices
 
 - **Endpoint:** `/api/stocks/:symbol/historical`
 - **Method:** `GET`
-- **Description:** Returns historical price data for a single stock within the last week. Requires a query parameter for the date.
+- **Query Parameters:**
+  - `startDate`: Start date for historical data (YYYY-MM-DD)
+  - `endDate`: End date for historical data (YYYY-MM-DD)
+- **Description:** Returns historical price data for a stock within the specified date range
 
 ## Contributing
 
