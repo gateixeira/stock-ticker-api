@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { getStockBySymbol } = require('./helpers');
+const { getStockBySymbol } = require('../utils/helpers');
 
 // Mock axios
 jest.mock('axios');
