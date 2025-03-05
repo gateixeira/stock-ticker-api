@@ -1,4 +1,4 @@
-# Stock Ticker API
+# Stock Ticker API - 100% Built with Copilot
 
 This project is a REST API for a stock ticker application that provides real-time and historical stock price information. It allows users to query individual stock prices and retrieve historical price data for any given stock symbol.
 
