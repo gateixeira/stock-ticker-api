@@ -35,6 +35,12 @@ app.get('/api/stocks/:symbol/historical', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Start the server only if the file is run directly
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
+
+// Export the app for testing
+module.exports = app;
