@@ -28,7 +28,9 @@ const getStockBySymbol = async (symbol) => {
 
 const getHistoricalPrices = async (symbol, startDate, endDate) => {
     try {
+        console.log('Fetching historical prices for:', symbol, 'from', startDate, 'to', endDate);
         const response = await axios.get(`${BASE_URL}?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`);
+        console.log('Response data:', response.data);
         const timeSeries = response.data['Time Series (Daily)'];
         
         if (!timeSeries) {

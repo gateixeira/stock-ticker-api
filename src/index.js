@@ -14,6 +14,7 @@ app.get('/api/stocks/:symbol', async (req, res) => {
             res.status(404).json({ message: 'Stock not found' });
         }
     } catch (error) {
+        console.error('Error fetching stock data:', error);
         res.status(500).json({ message: 'Error fetching stock data' });
     }
 });
@@ -31,10 +32,17 @@ app.get('/api/stocks/:symbol/historical', async (req, res) => {
             res.status(404).json({ message: 'Historical data not found' });
         }
     } catch (error) {
+        console.error('Error fetching historical data:', error);
         res.status(500).json({ message: 'Error fetching historical data' });
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Start the server only if this file is run directly
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
+
+// Export the app for testing purposes
+module.exports = app;
